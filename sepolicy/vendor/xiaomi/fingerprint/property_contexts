@@ -7,4 +7,3 @@ vendor.fps_hal.               u:object_r:vendor_fp_prop:s0
 vendor.panel.display.         u:object_r:vendor_fp_prop:s0
 persist.vendor.goodix.        u:object_r:vendor_fp_prop:s0
 persist.vendor.fpc.           u:object_r:vendor_fp_prop:s0
-vendor.fingerprint.vendor     u:object_r:vendor_fp_prop:s0

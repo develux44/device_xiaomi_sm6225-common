@@ -19,4 +19,3 @@
 
 # Fix Goodix events
 /vendor/bin/init.goodix.events.sh                                       u:object_r:vendor_goodix_events_exec:s0
-/sys/bus/platform/devices/soc:fingerprint_fpc(/.*?) 			u:object_r:sysfs_fps_attr:s0
