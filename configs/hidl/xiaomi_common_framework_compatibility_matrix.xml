@@ -19,13 +19,13 @@
         <transport>hwbinder</transport>
         <version>1.2</version>
         <version>4.0</version>
-        <version>4.1</version>
+        <version>4.0-1</version>
         <interface>
             <name>ILocHidlGnss</name>
             <instance>gnss_vendor</instance>
         </interface>
     </hal>
-     <hal format="aidl" optional="true">
+    <hal format="aidl" optional="true">
         <name>vendor.qti.gnss</name>
         <transport>hwbinder</transport>
         <fqname>ILocAidlGnss/default</fqname>

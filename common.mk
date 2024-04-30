@@ -48,11 +48,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.boot@1.2-impl-qti \
     android.hardware.boot@1.2-impl-qti.recovery \
-    android.hardware.boot@1.2-service \
-    vendor.qti.gnss@4.0 \
-    vendor.qti.gnss@4.0-impl \
-    vendor.qti.gnss@4.0-qti \
-    vendor.qti.gnss@4.0-service
+    android.hardware.boot@1.2-service
 
 PRODUCT_PACKAGES += \
     update_engine \
