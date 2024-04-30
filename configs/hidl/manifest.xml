@@ -600,7 +600,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <fqname>@2.1::ILocHidlGnss/gnss_vendor</fqname>
         <fqname>@3.0::ILocHidlGnss/gnss_vendor</fqname>
         <fqname>@4.0::ILocHidlGnss/gnss_vendor</fqname>
-        <fqname>@4.1::ILocHidlGnss/gnss_vendor</fqname>
     </hal>
     <hal format="hidl">
         <name>android.hardware.gnss</name>
