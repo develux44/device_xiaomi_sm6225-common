@@ -32,6 +32,7 @@ import /vendor/etc/init/hw/init.device.rc
 
 on property:sys.boot_completed=1
     chmod 0640 /sys/fs/selinux/enforce
+    stop statsd
 
 on early-init
     write /proc/sys/kernel/sched_boost 1
