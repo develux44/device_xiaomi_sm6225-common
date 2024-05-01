@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+
 # APEX's
 $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
@@ -71,7 +73,9 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml
 
 PRODUCT_PACKAGES += \
-    android.hardware.audio.service
+    android.hardware.audio.service \
+    android.hardware.audio@7.1-impl \
+    android.hardware.audio.effect@7.0-impl
 
 PRODUCT_ODM_PROPERTIES += \
     vendor.audio.feature.dynamic_ecns.enable=false \
@@ -135,6 +139,23 @@ PRODUCT_VENDOR_PROPERTIES += \
     persist.vendor.qcom.bluetooth.soc=cherokee \
     persist.vendor.qcom.bluetooth.twsp_state.enabled=false \
     ro.vendor.bluetooth.wipower=false
+
+# Bluetooth
+PRODUCT_PACKAGES += \
+    audio.bluetooth.default \
+    android.hardware.bluetooth.audio@2.0-impl \
+    com.dsi.ant@1.0.vendor \
+    com.qualcomm.qti.bluetooth_audio@1.0.vendor \
+    libbluetooth_audio_session \
+    vendor.qti.hardware.bluetooth_audio@2.1.vendor \
+    vendor.qti.hardware.btconfigstore@1.0.vendor \
+    vendor.qti.hardware.btconfigstore@2.0.vendor
+
+# Power
+PRODUCT_PACKAGES += \
+    android.hardware.power-service \
+    android.hardware.power@1.2.vendor \
+    vendor.qti.hardware.perf@2.2.vendor
 
 # Camera
 $(call inherit-product-if-exists, device/xiaomi/sm6225-common-miuicamera/config.mk)
@@ -384,16 +405,14 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
     ro.telephony.block_binder_thread_on_incoming_calls=false
 
 PRODUCT_VENDOR_PROPERTIES += \
-    persist.vendor.data.iwlan.enable=true \
-    persist.vendor.radio.add_power_save=1 \
+    persist.vendor.radio.add_power_save=0 \
     persist.vendor.radio.atfwd.start=true \
-    persist.vendor.radio.enable_temp_dds=true \
+    persist.vendor.radio.data_con_rprt=1 \
     persist.vendor.radio.force_on_dc=true \
+    persist.vendor.radio.manual_nw_rej_ct=1 \
     persist.vendor.radio.mt_sms_ack=30 \
     persist.vendor.radio.process_sups_ind=1 \
-    ro.vendor.radio.features_common=3 \
-    ro.vendor.se.type=HCE,UICC \
-    sys.vendor.shutdown.waittime=500
+    persist.vendor.radio.report_codec=1
 
 # Sensors
 PRODUCT_PACKAGES += \
