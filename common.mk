@@ -445,7 +445,8 @@ PRODUCT_VENDOR_PROPERTIES += \
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
-    hardware/xiaomi
+    hardware/xiaomi \
+    hardware/qcom/display
 
 # Storage.xml moment
 PRODUCT_SYSTEM_PROPERTIES += \
@@ -492,10 +493,6 @@ PRODUCT_EXTRA_VNDK_VERSIONS := 30
 # WiFi
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/WCNSS_qcom_cfg.ini
-
-# WiFi Display
-PRODUCT_PACKAGES += \
-    libwfdaac_vendor:32
 
 # WLAN
 PRODUCT_PRODUCT_PROPERTIES += \
