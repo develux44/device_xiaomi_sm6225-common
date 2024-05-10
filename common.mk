@@ -12,10 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Lineage Health
+PRODUCT_PACKAGES += \
+    vendor.lineage.health-service.default
+		
+TARGET_HEALTH_CHARGING_CONTROL_SUPPORTS_BYPASS := false
 
+# loggy
+PRODUCT_PACKAGES += \
+    loggy.sh
+
+PRODUCT_COPY_FILES += \
+    device/xiaomi/sm6225-common/init/loggy.sh:$(TARGET_COPY_OUT_VENDOR)/bin/loggy.sh
 
 # APEX's
-$(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
 # Include GSI
 $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
@@ -23,12 +33,16 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 # Setup dalvik vm configs
 $(call inherit-product, frameworks/native/build/phone-xhdpi-4096-dalvik-heap.mk)
 
+# Project ID Quota
+$(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
+		
+
 PRODUCT_PACKAGES += \
     android.system.keystore2
 
 # A/B
 ifeq ($(TARGET_IS_VAB),true)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/android_t_baseline.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/vabc_features.mk)
 PRODUCT_VIRTUAL_AB_COMPRESSION_METHOD := gz
 
 AB_OTA_POSTINSTALL_CONFIG += \
@@ -77,7 +91,7 @@ PRODUCT_PACKAGES += \
     android.hardware.audio@7.1-impl \
     android.hardware.audio.effect@7.0-impl
 
-PRODUCT_ODM_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     vendor.audio.feature.dynamic_ecns.enable=false \
     vendor.audio.offload.buffer.size.kb=256
 
@@ -200,11 +214,6 @@ PRODUCT_VENDOR_PROPERTIES += \
     ro.crypto.dm_default_key.options_format.version=2 \
     ro.crypto.volume.filenames_mode=aes-256-cts \
     ro.crypto.volume.metadata.method=dm-default-key
-
-# Dex/ART optimization
-PRODUCT_ART_TARGET_INCLUDE_DEBUG_BUILD := false
-PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := everything
-USE_DEX2OAT_DEBUG := false
 
 # Display
 PRODUCT_PACKAGES += \

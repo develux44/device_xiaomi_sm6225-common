@@ -14,6 +14,8 @@
 
 COMMON_PATH := device/xiaomi/sm6225-common
 
+TARGET_FS_CONFIG_GEN := $(COMMON_PATH)/configs/config.fs
+
 # A/B
 ifeq ($(TARGET_IS_VAB),true)
 AB_OTA_UPDATER := true
@@ -32,9 +34,6 @@ AB_OTA_PARTITIONS += \
     vendor_boot
 endif
 
-# APEX
-DEXPREOPT_GENERATE_APEX_IMAGE := true
-
 # Architecture
 TARGET_ARCH := arm64
 TARGET_ARCH_VARIANT := armv8-a
@@ -49,7 +48,6 @@ TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := cortex-a73
 
 # Audio
-TARGET_PROVIDES_AUDIO_EXTNS := true
 
 # AVB
 BOARD_AVB_ENABLE := true
@@ -81,35 +79,31 @@ DEVICE_MANIFEST_FILE += $(COMMON_PATH)/configs/hidl/manifest.xml
 
 # Kernel
 BOARD_KERNEL_BASE        := 0x00000000
-BOARD_KERNEL_IMAGE_NAME  := Image
+BOARD_KERNEL_IMAGE_NAME  := Image.gz
 BOARD_KERNEL_OFFSET      := 0x00008000
 BOARD_KERNEL_PAGESIZE    := 4096
 BOARD_RAMDISK_OFFSET     := 0x01000000
 BOARD_TAGS_OFFSET        := 0x00000100
 
+BOARD_BOOT_HEADER_VERSION := 3
+BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
+
 BOARD_KERNEL_CMDLINE += \
-    androidboot.console=ttyMSM0 \
-    androidboot.fstab_suffix=qcom \
     androidboot.init_fatal_reboot_target=recovery \
-    androidboot.hardware=qcom \
     androidboot.memcg=1 \
     androidboot.usbcontroller=4e00000.dwc3 \
-    console=ttyMSM0,115200n8 \
-    earlycon=msm_geni_serial,0x4a90000 \
     loop.max_part=7 \
     lpm_levels.sleep_disabled=1 \
     msm_rtb.filter=0x237 \
     service_locator.enable=1 \
-    swiotlb=2048 \
-    kpti=off
+    swiotlb=2048
 
-ifeq ($(PRODUCT_VIRTUAL_AB_OTA),true)
-BOARD_BOOT_HEADER_VERSION := 3
-else
-BOARD_BOOT_HEADER_VERSION := 2
-endif
-BOARD_KERNEL_SEPARATED_DTBO := true
-BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
+TARGET_KERNEL_ARCH := arm64
+TARGET_KERNEL_CONFIG := vendor/fog-perf_defconfig
+TARGET_KERNEL_HEADERS := kernel/xiaomi/fog
+TARGET_KERNEL_SOURCE := kernel/xiaomi/fog
+TARGET_KERNEL_CLANG_COMPILE := true
+TARGET_LINUX_KERNEL_VERSION := 4.19
 
 # Media
 TARGET_DISABLED_UBWC := true
@@ -125,7 +119,7 @@ BOARD_VENDOR_BOOTIMAGE_PARTITION_SIZE := 100663296
 
 BOARD_SUPER_PARTITION_SIZE := 9126805504
 BOARD_SUPER_PARTITION_GROUPS := qti_dynamic_partitions
-BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := odm system system_ext product vendor
+BOARD_QTI_DYNAMIC_PARTITIONS_PARTITION_LIST := system system_ext odm product vendor
 BOARD_QTI_DYNAMIC_PARTITIONS_SIZE := 9122611200 # BOARD_SUPER_PARTITION_SIZE - 4MB
 
 ifneq ($(TARGET_DISABLES_GMS),true)
@@ -141,6 +135,7 @@ BOARD_SYSTEM_EXTIMAGE_EXTFS_INODE_COUNT := -1
 BOARD_SYSTEM_EXTIMAGE_PARTITION_RESERVED_SIZE := 419430400
 endif
 BOARD_VENDORIMAGE_PARTITION_RESERVED_SIZE := 104857600
+BOARD_ODMIMAGE_PARTITION_RESERVED_SIZE := 104857600
 
 BOARD_ODMIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
@@ -151,11 +146,12 @@ BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
-
 TARGET_COPY_OUT_ODM := odm
+
 TARGET_COPY_OUT_PRODUCT := product
 TARGET_COPY_OUT_SYSTEM_EXT := system_ext
 TARGET_COPY_OUT_VENDOR := vendor
+BOARD_USES_METADATA_PARTITION := true
 
 # Releasetools
 TARGET_RELEASETOOLS_EXTENSIONS ?= $(COMMON_PATH)

@@ -78,15 +78,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </interface>
     </hal>
     <hal format="hidl">
-        <name>vendor.qti.hardware.iop</name>
-        <transport>hwbinder</transport>
-        <version>2.0</version>
-        <interface>
-            <name>IIop</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="hidl">
         <name>android.hardware.memtrack</name>
         <transport>hwbinder</transport>
         <version>1.0</version>
@@ -126,16 +117,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         </interface>
         <interface>
             <name>IGPAppConnector</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <!-- TUI Communicator service -->
-    <hal format="hidl">
-        <name>vendor.qti.hardware.tui_comm</name>
-        <transport>hwbinder</transport>
-        <version>1.0</version>
-        <interface>
-            <name>ITuiComm</name>
             <instance>default</instance>
         </interface>
     </hal>
@@ -180,6 +161,12 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <name>IWifiDisplaySessionImageTrack</name>
             <instance>wifidisplaysessionimagetrack</instance>
         </interface>
+    </hal>
+   <hal format="hidl">
+        <name>android.hardware.drm</name>
+        <transport>hwbinder</transport>
+        <fqname>@1.3::ICryptoFactory/wfdhdcp</fqname>
+        <fqname>@1.3::IDrmFactory/wfdhdcp</fqname>
     </hal>
    <!-- IMS UCE Service -->
    <hal format="hidl">
@@ -336,7 +323,7 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <hal format="hidl">
         <name>vendor.qti.hardware.radio.ims</name>
         <transport>hwbinder</transport>
-        <version>1.7</version>
+        <version>1.9</version>
         <interface>
             <name>IImsRadio</name>
             <instance>imsradio0</instance>
@@ -425,16 +412,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <instance>imsrtpservice</instance>
         </interface>
     </hal>
-   <!-- Perf HAL service -->
-    <hal format="hidl">
-         <name>vendor.qti.hardware.perf</name>
-         <transport>hwbinder</transport>
-         <version>2.2</version>
-         <interface>
-             <name>IPerf</name>
-             <instance>default</instance>
-         </interface>
-     </hal>
     <!-- Hidl service for 5G network apis -->
     <hal format="hidl">
         <name>vendor.qti.hardware.radio.qtiradio</name>
@@ -468,6 +445,15 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </hal>
     <hal format="hidl">
         <name>vendor.qti.hardware.bluetooth_audio</name>
+        <transport>hwbinder</transport>
+        <version>2.1</version>
+        <interface>
+            <name>IBluetoothAudioProvidersFactory</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
+    <hal format="hidl">
+        <name>android.hardware.bluetooth.audio</name>
         <transport>hwbinder</transport>
         <version>2.1</version>
         <interface>
@@ -524,16 +510,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <instance>camerapostprocservice</instance>
         </interface>
     </hal>
-    <!--  QCC HAL Service -->
-    <hal format="hidl">
-       <name>vendor.qti.hardware.qccvndhal</name>
-       <transport>hwbinder</transport>
-       <version>1.0</version>
-       <interface>
-           <name>IQccvndhal</name>
-           <instance>qccvndhal</instance>
-       </interface>
-    </hal>
     <!-- eMBMS HAL Service -->
     <hal format="hidl">
         <name>vendor.qti.hardware.embmssl</name>
@@ -544,26 +520,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <instance>embmsslServer0</instance>
         </interface>
     </hal>
-    <!-- QSPM-HAL service -->
-    <hal format="hidl">
-        <name>vendor.qti.qspmhal</name>
-        <transport>hwbinder</transport>
-        <version>1.0</version>
-        <interface>
-            <name>IQspmhal</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <!-- PASR Manager -->
-    <hal format="hidl">
-       <name>vendor.qti.power.pasrmanager</name>
-       <transport>hwbinder</transport>
-       <version>1.0</version>
-       <interface>
-           <name>IPasrManager</name>
-           <instance>default</instance>
-       </interface>
-    </hal>
     <!-- MwqemAdapter HAL service -->
     <hal format="hidl">
         <name>vendor.qti.hardware.mwqemadapter</name>
@@ -573,94 +529,5 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             <name>IMwqemAdapter</name>
             <instance>MwqemAdapter</instance>
         </interface>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.drm</name>
-        <transport>hwbinder</transport>
-        <fqname>@1.3::ICryptoFactory/wfdhdcp</fqname>
-        <fqname>@1.3::IDrmFactory/wfdhdcp</fqname>
-    </hal>
-    <hal format="hidl">
-        <name>vendor.qti.gnss</name>
-        <transport>hwbinder</transport>
-        <interface>
-            <name>ILocHidlGnss</name>
-            <instance>gnss_vendor</instance>
-        </interface>
-        <fqname>@1.2::ILocHidlGnss/gnss_vendor</fqname>
-        <fqname>@2.1::ILocHidlGnss/gnss_vendor</fqname>
-        <fqname>@3.0::ILocHidlGnss/gnss_vendor</fqname>
-        <fqname>@4.0::ILocHidlGnss/gnss_vendor</fqname>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.gnss</name>
-        <transport>hwbinder</transport>
-        <fqname>@1.0::IGnss/gnss_vendor</fqname>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.radio.config</name>
-        <transport>hwbinder</transport>
-        <interface>
-            <name>IRadioConfig</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="hidl">
-        <name>vendor.qti.gnss</name>
-        <transport>hwbinder</transport>
-        <version>4.0</version>
-        <interface>
-            <name>ILocHidlGnss</name>
-            <instance>gnss_vendor</instance>
-        </interface>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.graphics.allocator</name>
-        <transport>hwbinder</transport>
-        <interface>
-            <name>IAllocator</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="hidl">
-        <name>com.dsi.ant</name>
-        <transport>hwbinder</transport>
-        <version>1.0</version>
-        <interface>
-            <name>IAnt</name>
-            <instance>default</instance>
-        </interface>
-    </hal> 
-    <hal format="hidl">
-        <name>android.hardware.audio</name>
-        <transport>hwbinder</transport>
-        <version>7.1</version>
-        <interface>
-            <name>IDevicesFactory</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.audio.effect</name>
-        <transport>hwbinder</transport>
-        <version>7.0</version>
-        <interface>
-            <name>IEffectsFactory</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.bluetooth.audio</name>
-        <transport>hwbinder</transport>
-        <version>2.1</version>
-        <interface>
-            <name>IBluetoothAudioProvidersFactory</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="hidl">
-        <name>vendor.qti.data.factory</name>
-        <transport>hwbinder</transport>
-        <fqname>@2.4::IFactory/default</fqname>
     </hal>
 </manifest>

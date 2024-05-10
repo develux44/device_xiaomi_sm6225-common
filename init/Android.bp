@@ -65,3 +65,11 @@ sh_binary {
     src: "init.qti.early_init.sh",
     vendor: true,
 }
+
+sh_binary {
+    name: "loggy.sh",
+    src: "loggy.sh",
+    sub_dir: "bin",
+    vendor: true,
+}
+
