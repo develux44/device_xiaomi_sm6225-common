@@ -30,10 +30,6 @@
 
 import /vendor/etc/init/hw/init.device.rc
 
-on property:sys.boot_completed=1
-    chmod 0640 /sys/fs/selinux/enforce
-    stop statsd
-
 on early-init
     write /proc/sys/kernel/sched_boost 1
     exec u:r:vendor_qti_init_shell:s0 -- /vendor/bin/init.qti.early_init.sh
@@ -64,10 +60,6 @@ on fs
     restorecon_recursive /mnt/vendor/persist
     mkdir /mnt/vendor/persist/data 0700 system system
 
-on post-fs
-    # set RLIMIT_MEMLOCK to 64MB
-    setrlimit 8 67108864 67108864
-
 on late-fs
     wait_for_prop hwservicemanager.ready true
     exec_start wait_for_keymaster
@@ -75,17 +67,6 @@ on late-fs
 
 on post-fs-data
     mkdir /vendor/data/tombstones 0771 system system
-    # Permissions for Factory Test of Charging Paths
-    chown system system /sys/class/power_supply/battery/capacity
-    chmod 0660 /sys/class/power_supply/battery/capacity
-    chown root /sys/class/power_supply/battery/current_now
-    chown root /sys/class/power_supply/battery/voltage_now
-    chmod 0664 /sys/class/power_supply/battery/current_now
-    chmod 0664 /sys/class/power_supply/battery/voltage_now
-    chown root system /sys/class/power_supply/bms/current_now
-    chown root system /sys/class/power_supply/bms/voltage_ocv
-    chmod 0664 /sys/class/power_supply/bms/current_now
-    chmod 0664 /sys/class/power_supply/bms/voltage_ocv
 
 on early-boot
     start vendor.sensors
@@ -97,13 +78,6 @@ on boot
     setprop vendor.usb.dpl.inst.name "dpl"
     setprop vendor.usb.qdss.inst.name "qdss"
     setprop vendor.usb.controller 4e00000.dwc3
-    # Battery health
-    chown system system /sys/class/power_supply/battery/input_suspend
-    chmod 0666 /sys/class/power_supply/battery/input_suspend
-    write /proc/sys/vm/swappiness 160
-
-# Load WLAN driver
-    insmod /vendor/lib/modules/qca_cld3_wlan.ko
 
 on boot && property:persist.vendor.usb.controller.default=*
     setprop vendor.usb.controller ${persist.vendor.usb.controller.default}
@@ -112,9 +86,6 @@ on property:vendor.usb.controller=*
     setprop sys.usb.controller ${vendor.usb.controller}
 
 on charger
-    mount_all /vendor/etc/charger_fstab.qti --early
-    write /sys/kernel/boot_adsp/boot 1
-    wait /sys/class/power_supply/battery
     start vendor.power_off_alarm
     setprop vendor.usb.controller 4e00000.dwc3
     setprop sys.usb.configfs 1
@@ -140,6 +111,7 @@ service vendor.per_proxy /vendor/bin/pm-proxy
 
 service vendor.mdm_helper /vendor/bin/mdm_helper
     class core
+    user root
     group system wakelock
     disabled
 

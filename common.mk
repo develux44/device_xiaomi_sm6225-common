@@ -12,24 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-
 # APEX's
 $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
 # Include GSI
 $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 
+# Project ID Quota
+$(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
+
 # Setup dalvik vm configs
 $(call inherit-product, frameworks/native/build/phone-xhdpi-4096-dalvik-heap.mk)
-
-PRODUCT_PACKAGES += \
-    android.system.keystore2
 
 # A/B
 ifeq ($(TARGET_IS_VAB),true)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/android_t_baseline.mk)
-PRODUCT_VIRTUAL_AB_COMPRESSION_METHOD := gz
 
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \
@@ -63,8 +60,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.device_id_attestation.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.device_id_attestation.xml
 
 # Audio
-BOARD_SUPPORTS_OPENSOURCE_STHAL := true
-
 PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,$(LOCAL_PATH)/configs/audio/,$(TARGET_COPY_OUT_VENDOR)/etc)
 
@@ -77,7 +72,7 @@ PRODUCT_PACKAGES += \
     android.hardware.audio@7.1-impl \
     android.hardware.audio.effect@7.0-impl
 
-PRODUCT_ODM_PROPERTIES += \
+PRODUCT_PRODUCT_PROPERTIES += \
     vendor.audio.feature.dynamic_ecns.enable=false \
     vendor.audio.offload.buffer.size.kb=256
 
@@ -85,22 +80,10 @@ PRODUCT_SYSTEM_PROPERTIES += \
     ro.config.vc_call_vol_steps=11
 
 PRODUCT_VENDOR_PROPERTIES += \
-    persist.vendor.audio.ozo.codec.enable=true \
     ro.audio.monitorRotation=true \
-    ro.vendor.audio.afe.record=true \
     ro.vendor.audio.misound.bluetooth.enable=true \
-    ro.vendor.audio.scenario.support=false \
     ro.vendor.audio.soundfx.type=mi \
-    ro.vendor.audio.soundfx.usb=true \
-    ro.vendor.audio.sfx.earadj=true \
-    ro.vendor.audio.sfx.scenario=false \
-    ro.vendor.audio.spk.clean=true \
-    ro.vendor.audio.sos=true \
-    ro.vendor.audio.surround.support=false \
-    ro.vendor.audio.vocal.support=false \
-    ro.vendor.audio.voice.change.support=true \
-    ro.vendor.audio.voice.change.version=2 \
-    vendor.audio.chk.cal.us=0
+    ro.vendor.audio.soundfx.usb=true
 
 PRODUCT_VENDOR_PROPERTIES += \
     ro.vendor.audio.soundtrigger.appdefine.cnn.level=31 \
@@ -126,13 +109,9 @@ PRODUCT_PRODUCT_PROPERTIES += \
     bluetooth.hardware.power.rx_cur_ma=75 \
     bluetooth.hardware.power.tx_cur_ma=93
 
-PRODUCT_SYSTEM_EXT_PROPERTIES += \
-    persist.sys.btsatck.absvolfeature=true \
-    persist.vendor.service.bdroid.soc.alwayson=true
-
 PRODUCT_VENDOR_PROPERTIES += \
     persist.vendor.bluetooth.modem_nv_support=true \
-    persist.vendor.qcom.bluetooth.a2dp_offload_cap=sbc-aac-aptx-aptxhd-ldac \
+    persist.vendor.qcom.bluetooth.a2dp_offload_cap=sbc-aac-aptx-aptxhd-ldac-aptxadaptive \
     persist.vendor.qcom.bluetooth.aac_vbr_ctl.enabled=false \
     persist.vendor.qcom.bluetooth.enable.splita2dp=true \
     persist.vendor.qcom.bluetooth.scram.enabled=false \
@@ -140,38 +119,17 @@ PRODUCT_VENDOR_PROPERTIES += \
     persist.vendor.qcom.bluetooth.twsp_state.enabled=false \
     ro.vendor.bluetooth.wipower=false
 
-# Bluetooth
-PRODUCT_PACKAGES += \
-    audio.bluetooth.default \
-    android.hardware.bluetooth.audio@2.0-impl \
-    com.dsi.ant@1.0.vendor \
-    com.qualcomm.qti.bluetooth_audio@1.0.vendor \
-    libbluetooth_audio_session \
-    vendor.qti.hardware.bluetooth_audio@2.1.vendor \
-    vendor.qti.hardware.btconfigstore@1.0.vendor \
-    vendor.qti.hardware.btconfigstore@2.0.vendor
-
-# Power
-PRODUCT_PACKAGES += \
-    android.hardware.power-service \
-    android.hardware.power@1.2.vendor \
-    vendor.qti.hardware.perf@2.2.vendor
-
 # Camera
-$(call inherit-product-if-exists, device/xiaomi/sm6225-common-miuicamera/config.mk)
+$(call inherit-product-if-exists, vendor/xiaomi/camera/miuicamera.mk)
 
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
     android.hardware.camera.provider@2.4-service_64 \
     libcamera2ndk_vendor \
     libdng_sdk.vendor \
-    libstdc++.vendor \
+    libstdc++_vendor \
     vendor.qti.hardware.camera.device@1.0.vendor \
     vendor.qti.hardware.camera.postproc@1.0.vendor
-
-PRODUCT_SYSTEM_PROPERTIES += \
-    persist.vendor.camera.aon.cameraId=8 \
-    persist.vendor.camera.aon8475.cameraId=9
 
 PRODUCT_VENDOR_PROPERTIES += \
     camera.disable_zsl_mode=1
@@ -201,10 +159,9 @@ PRODUCT_VENDOR_PROPERTIES += \
     ro.crypto.volume.filenames_mode=aes-256-cts \
     ro.crypto.volume.metadata.method=dm-default-key
 
-# Dex/ART optimization
-PRODUCT_ART_TARGET_INCLUDE_DEBUG_BUILD := false
-PRODUCT_DEX_PREOPT_DEFAULT_COMPILER_FILTER := everything
-USE_DEX2OAT_DEBUG := false
+# Cutout
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.support_hide_display_cutout=true
 
 # Display
 PRODUCT_PACKAGES += \
@@ -229,9 +186,10 @@ PRODUCT_VENDOR_PROPERTIES += \
 # DRM
 PRODUCT_PACKAGES += \
     android.hardware.drm@1.4.vendor \
-    android.hardware.drm-service.clearkey \
-    android.hardware.drm@1.3-service.clearkey \
-    android.hardware.drm@1.3-service.widevine
+    android.hardware.drm-service.clearkey
+
+PRODUCT_VENDOR_PROPERTIES += \
+    drm.service.enabled=true
 
 # Enable Dynamic partition
 PRODUCT_BUILD_SUPER_PARTITION := false
@@ -239,13 +197,10 @@ PRODUCT_USE_DYNAMIC_PARTITIONS := true
 
 # Fastboot
 PRODUCT_PACKAGES += \
-    android.hardware.fastboot@1.1-impl-mock \
+    android.hardware.fastboot-service.example_recovery \
     fastbootd
 
 # Fingerprint
-PRODUCT_PACKAGES += \
-    android.hardware.biometrics.fingerprint@2.3-service.xiaomi
-
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml
 
@@ -277,13 +232,8 @@ PRODUCT_VENDOR_PROPERTIES += \
    ro.hardware.vulkan=adreno \
    ro.opengles.version=196610
 
-# GFX
-PRODUCT_VENDOR_PROPERTIES += \
-    ro.config.avoid_gfx_accel=true
-
 # GPS
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gps/lowi.conf:$(TARGET_COPY_OUT_VENDOR)/etc/lowi.conf \
     $(LOCAL_PATH)/configs/gps/flp.conf:$(TARGET_COPY_OUT_VENDOR)/etc/flp.conf \
     $(LOCAL_PATH)/configs/gps/gps.conf:$(TARGET_COPY_OUT_VENDOR)/etc/gps.conf \
     $(LOCAL_PATH)/configs/gps/sap.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sap.conf
@@ -296,22 +246,24 @@ PRODUCT_COPY_FILES += \
 PRODUCT_VENDOR_PROPERTIES += \
     ro.incremental.enable=1
 
-# Keyguard
-PRODUCT_VENDOR_PROPERTIES += \
-    persist.wm.enable_remote_keyguard_animation=0
-
 # Keylayout
 PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,$(LOCAL_PATH)/configs/keylayout/,$(TARGET_COPY_OUT_VENDOR)/usr/keylayout)
 
-# Media
+# Lineage Health
 PRODUCT_PACKAGES += \
-    libavservices_minijail_vendor \
-    libcodec2_soft_common.vendor \
-    libsfplugin_ccodec_utils.vendor
+    vendor.lineage.health-service.default
 
+TARGET_HEALTH_CHARGING_CONTROL_SUPPORTS_BYPASS := false
+
+# LMK
+PRODUCT_SYSTEM_PROPERTIES += \
+    ro.lmk.filecache_min_kb=153600  \
+    ro.lmk.kill_timeout_ms=50 \
+    ro.lmk.stall_limit_critical=40
+
+# Media
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
-    debug.stagefright.omx_default_rank=0 \
     media.aac_51_output_enabled=true \
     media.stagefright.enable-aac=true \
     media.stagefright.enable-fma2dp=true \
@@ -322,29 +274,23 @@ PRODUCT_SYSTEM_EXT_PROPERTIES += \
     mmp.enable.3g2=true \
     persist.mm.enable.prefetch=true
 
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/media/media_codecs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs.xml
-
 # Netmgr
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
     persist.data.netmgrd.qos.enable=true
 
-# Neural Networks
-PRODUCT_PACKAGES += \
-    android.hardware.neuralnetworks@1.3.vendor
-
 # Overlays
 PRODUCT_PACKAGES += \
     AOSPABengalFrameworksOverlay \
+    AvoidAppsInCutoutOverlay \
     BengalCarrierConfigOverlay \
     BengalFrameworksOverlay \
     BengalSettingsOverlay \
     BengalSystemUIOverlay \
-    BengalWifiOverlay
+    BengalWifiOverlay \
+    WifiMainline
 
 # Perf
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/perf/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf \
     $(LOCAL_PATH)/configs/perf/perfconfigstore.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/perfconfigstore.xml
 
 # Public libraries
@@ -387,43 +333,35 @@ TARGET_COMMON_QTI_COMPONENTS += \
     media \
     overlay \
     perf \
-    usb \
     telephony \
+    usb \
     vibrator \
     wfd \
     wlan
-
-# QMI
-PRODUCT_VENDOR_PROPERTIES += \
-    persist.vendor.qcomsysd.enabled=1
 
 # Radio
 PRODUCT_PRODUCT_PROPERTIES += \
     rild.libpath=/vendor/lib64/libril-qc-hal-qmi.so
 
-PRODUCT_SYSTEM_EXT_PROPERTIES += \
-    ro.telephony.block_binder_thread_on_incoming_calls=false
-
 PRODUCT_VENDOR_PROPERTIES += \
+    persist.vendor.data.iwlan.enable=true \
     persist.vendor.radio.add_power_save=0 \
     persist.vendor.radio.atfwd.start=true \
     persist.vendor.radio.data_con_rprt=1 \
+    persist.vendor.radio.enable_temp_dds=true \
     persist.vendor.radio.force_on_dc=true \
-    persist.vendor.radio.manual_nw_rej_ct=1 \
     persist.vendor.radio.mt_sms_ack=30 \
     persist.vendor.radio.process_sups_ind=1 \
-    persist.vendor.radio.report_codec=1
+    persist.vendor.radio.redir_party_num=0 \
+    ro.vendor.radio.features_common=3 \
+    ro.vendor.se.type=HCE,UICC \
+    sys.vendor.shutdown.waittime=500
 
 # Sensors
 PRODUCT_PACKAGES += \
     android.hardware.sensors@2.0-ScopedWakelock.vendor \
-    android.hardware.sensors@2.1-service.xiaomi-multihal \
-    android.frameworks.sensorservice@1.0 \
-    android.frameworks.sensorservice@1.0.vendor \
-    android.hardware.sensors@1.0-impl \
-    android.hardware.sensors@1.0-service \
-    android.hardware.sensors@1.0 \
-    libsensorndkbridge \
+    android.hardware.sensors-service.xiaomi-multihal \
+    libsensorndkbridge
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
@@ -445,12 +383,7 @@ PRODUCT_VENDOR_PROPERTIES += \
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
     $(LOCAL_PATH) \
-    hardware/xiaomi \
-    hardware/qcom/display
-
-# Storage.xml moment
-PRODUCT_SYSTEM_PROPERTIES += \
-    persist.sys.binary_xml=false
+    hardware/xiaomi
 
 # Treble
 PRODUCT_FULL_TREBLE_OVERRIDE := true
@@ -464,20 +397,6 @@ PRODUCT_PRODUCT_PROPERTIES += \
     persist.timed.enable=true
 
 # USB
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/init/init.qcom.usb.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.qcom.usb.rc
-
-PRODUCT_PACKAGES += \
-    android.hardware.usb@1.3-service.basic
-
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
-    frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.host.xml
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/init/init.mi.usb.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.mi.usb.sh \
-    $(LOCAL_PATH)/init/init.qcom.usb.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.qcom.usb.sh
-
 ifneq ($(TARGET_BUILD_VARIANT),user)
 PRODUCT_VENDOR_PROPERTIES += \
     persist.vendor.usb.config=mtp,adb
@@ -487,51 +406,19 @@ endif
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.verified_boot.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.verified_boot.xml
 
-# VNDK
-PRODUCT_EXTRA_VNDK_VERSIONS := 30
-
 # WiFi
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/WCNSS_qcom_cfg.ini
 
 # WLAN
-PRODUCT_PRODUCT_PROPERTIES += \
+PRODUCT_VENDOR_PROPERTIES += \
+    ro.hardware.wlan.chip=wcn3988 \
+    ro.hardware.wlan.dbs=0 \
+    ro.hardware.wlan.mimo=0 \
     ro.hardware.wlan.vendor=qcom
 
 PRODUCT_VENDOR_PROPERTIES += \
-    ro.hardware.wlan.dbs=0 \
     ro.telephony.iwlan_operation_mode=legacy
-
-# Zygote
-PRODUCT_SYSTEM_PROPERTIES += \
-    zygote.critical_window.minute=10
-
-PRODUCT_VENDOR_PROPERTIES += \
-    ro.oem_unlock_supported=0
-
-PRODUCT_SYSTEM_PROPERTIES += \
-    persist.log.tag.AnalyticsService=S \
-    persist.log.tag.KernelCpuUidActiveTimeReader=S \
-    persist.log.tag.Tracer=S \
-    persist.log.tag.NearbySharing=S \
-    persist.log.tag.IntervalStats=S \
-    persist.log.tag.CompatibilityChangeReporter=S \
-    persist.log.tag.SQLiteLog=S \
-    persist.log.tag.wificond=S \
-    persist.log.tag.b/223498680=S \
-    persist.log.tag.TrafficStats=S \
-    persist.log.tag.ContrastColorUtil=S 
-
-PRODUCT_VENDOR_OVERRIDES += \
-    vendor.audio.feature.kpi_optimize.enable=false
-
-PRODUCT_VENDOR_OVERRIDES += \
-    persist.sys.usb.config=none \
-    sys.usb.mtp.batchcancel=1 \
-    vendor.usb.diag.func.name=ffs \
-    vendor.usb.qdss.inst.name=qdss_sw \
-    vendor.usb.use_ffs_mtp=1
-
 
 # Inherit from vendor
 $(call inherit-product, vendor/xiaomi/sm6225-common/sm6225-common-vendor.mk)

@@ -35,8 +35,3 @@
 /sys/bus/iio/devices/iio:device* buffer/enable                  0600 system system
 /sys/bus/iio/devices/iio:device* scan_elements/in_proximity_en  0600 system system
 /sys/bus/iio/devices/iio:device* scan_elements/in_timestamp_en  0600 system system
-
-/dev/adsprpc-smd          0664   system     system
-/dev/adsprpc-smd-secure   0644   system     system
-/dev/system_health_monitor 0644  radio      system
-/dev/mdss_rotator         0664   system     system
