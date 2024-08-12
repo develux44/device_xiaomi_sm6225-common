@@ -34,10 +34,9 @@ on early-boot
     write /sys/bus/msm_subsys/devices/subsys6/restart_level RELATED
     write /sys/bus/msm_subsys/devices/subsys7/restart_level RELATED
 
-on boot
-    # Lineage Health
-    chmod 0660 /sys/class/power_supply/battery/input_suspend
-    chown system system /sys/class/power_supply/battery/input_suspend
+on property:sys.boot_completed=1
+    # Only owner can acces this node
+    chmod 440 /proc/net/unix
 
 on property:ro.boot.hwname=*
     setprop ro.boot.product.hardware.sku ${ro.boot.hwname}

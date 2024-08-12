@@ -12,9 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# APEX's
-$(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
-
 # Include GSI
 $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 
@@ -22,11 +19,11 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 
 # Setup dalvik vm configs
-$(call inherit-product, frameworks/native/build/phone-xhdpi-4096-dalvik-heap.mk)
+$(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 
 # A/B
 ifeq ($(TARGET_IS_VAB),true)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/android_t_baseline.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/launch_with_vendor_ramdisk.mk)
 
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \
@@ -68,9 +65,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml
 
 PRODUCT_PACKAGES += \
-    android.hardware.audio.service \
-    android.hardware.audio@7.1-impl \
-    android.hardware.audio.effect@7.0-impl
+    android.hardware.audio.service
 
 PRODUCT_PRODUCT_PROPERTIES += \
     vendor.audio.feature.dynamic_ecns.enable=false \
@@ -159,6 +154,13 @@ PRODUCT_VENDOR_PROPERTIES += \
     ro.crypto.volume.filenames_mode=aes-256-cts \
     ro.crypto.volume.metadata.method=dm-default-key
 
+# Device Settings
+PRODUCT_PACKAGES += \
+    XiaomiParts
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/parts/privapp-permissions-parts.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-parts.xml
+
 # Cutout
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.support_hide_display_cutout=true
@@ -168,7 +170,7 @@ PRODUCT_PACKAGES += \
     android.frameworks.displayservice@1.0.vendor
 
 PRODUCT_VENDOR_PROPERTIES += \
-    debug.sf.disable_backpressure=1 \
+    debug.sf.enable_gl_backpressure=0 \
     debug.sf.layer_caching_active_layer_timeout_ms=1000 \
     debug.hwui.skia_atrace_enabled=false \
     ro.vendor.display.sensortype=2 \
@@ -251,16 +253,23 @@ PRODUCT_COPY_FILES += \
     $(call find-copy-subdir-files,*,$(LOCAL_PATH)/configs/keylayout/,$(TARGET_COPY_OUT_VENDOR)/usr/keylayout)
 
 # Lineage Health
-PRODUCT_PACKAGES += \
-    vendor.lineage.health-service.default
+#PRODUCT_PACKAGES += \
+#    vendor.lineage.health-service.default
 
-TARGET_HEALTH_CHARGING_CONTROL_SUPPORTS_BYPASS := false
+#TARGET_HEALTH_CHARGING_CONTROL_SUPPORTS_BYPASS := false
 
 # LMK
 PRODUCT_SYSTEM_PROPERTIES += \
+    ro.lmk.critical_upgrade=true \
+    ro.lmk.downgrade_pressure=60 \
     ro.lmk.filecache_min_kb=153600  \
-    ro.lmk.kill_timeout_ms=50 \
-    ro.lmk.stall_limit_critical=40
+    ro.lmk.kill_heaviest_task=false \
+    ro.lmk.kill_timeout_ms=100 \
+    ro.lmk.stall_limit_critical=40 \
+    ro.lmk.thrashing_limit=30 \
+    ro.lmk.thrashing_limit_decay=50 \
+    ro.lmk.upgrade_pressure=40 \
+    ro.lmk.use_minfree_levels=true
 
 # Media
 PRODUCT_SYSTEM_EXT_PROPERTIES += \
@@ -287,16 +296,21 @@ PRODUCT_PACKAGES += \
     BengalSettingsOverlay \
     BengalSystemUIOverlay \
     BengalWifiOverlay \
+    DeviceAsWebcamOverlay \
     WifiMainline
 
 # Perf
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/perf/perfconfigstore.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/perfconfigstore.xml
 
+# Phantom process monitoring
+PRODUCT_PRODUCT_PROPERTIES += \
+    sys.fflag.override.settings_enable_monitor_phantom_procs=false
+
 # Public libraries
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
-    
+
 # Rootdir / Init files
 PRODUCT_PACKAGES += \
     init.qti.dcvs.sh \
@@ -400,6 +414,15 @@ ifneq ($(TARGET_BUILD_VARIANT),user)
 PRODUCT_VENDOR_PROPERTIES += \
     persist.vendor.usb.config=mtp,adb
 endif
+
+PRODUCT_VENDOR_PROPERTIES += \
+    ro.usb.uvc.enabled=true
+
+PRODUCT_HAS_GADGET_HAL := true
+
+PRODUCT_ODM_PROPERTIES += \
+    sys.usb.mtp.batchcancel=1 \
+    vendor.usb.use_ffs_mtp=1
 
 # Verified Boot
 PRODUCT_COPY_FILES += \

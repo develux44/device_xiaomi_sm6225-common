@@ -61,8 +61,6 @@ on fs
     mkdir /mnt/vendor/persist/data 0700 system system
 
 on late-fs
-    wait_for_prop hwservicemanager.ready true
-    exec_start wait_for_keymaster
     mount_all /vendor/etc/fstab.qcom --late
 
 on post-fs-data
@@ -88,7 +86,6 @@ on property:vendor.usb.controller=*
 on charger
     start vendor.power_off_alarm
     setprop vendor.usb.controller 4e00000.dwc3
-    setprop sys.usb.configfs 1
 
 #pd-mapper
 service vendor.pd_mapper /vendor/bin/pd-mapper
