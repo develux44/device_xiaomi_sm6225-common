@@ -19,7 +19,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 
 # Setup dalvik vm configs
-$(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
+#$(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
 
 # A/B
 ifeq ($(TARGET_IS_VAB),true)
@@ -115,7 +115,8 @@ PRODUCT_VENDOR_PROPERTIES += \
     ro.vendor.bluetooth.wipower=false
 
 # Camera
-$(call inherit-product-if-exists, vendor/xiaomi/camera/miuicamera.mk)
+#$(call inherit-product-if-exists, vendor/xiaomi/camera/miuicamera.mk)
+#$(call inherit-product, vendor/xiaomi/miuicamera/config.mk)
 
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
@@ -344,6 +345,7 @@ TARGET_COMMON_QTI_COMPONENTS += \
     init \
     keymaster \
     media \
+    nfc \
     overlay \
     perf \
     telephony \
@@ -371,27 +373,27 @@ PRODUCT_VENDOR_PROPERTIES += \
     sys.vendor.shutdown.waittime=500
 
 # Sensors
-PRODUCT_PACKAGES += \
-    android.hardware.sensors@2.0-ScopedWakelock.vendor \
-    android.hardware.sensors-service.xiaomi-multihal \
-    libsensorndkbridge
+# PRODUCT_PACKAGES += \
+#     android.hardware.sensors@2.0-ScopedWakelock.vendor \
+#     android.hardware.sensors-service.xiaomi-multihal \
+#     libsensorndkbridge
 
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
-    frameworks/native/data/etc/android.hardware.sensor.barometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.barometer.xml \
-    frameworks/native/data/etc/android.hardware.sensor.compass.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.compass.xml \
-    frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.gyroscope.xml \
-    frameworks/native/data/etc/android.hardware.sensor.light.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.light.xml \
-    frameworks/native/data/etc/android.hardware.sensor.proximity.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.proximity.xml \
-    frameworks/native/data/etc/android.hardware.sensor.stepcounter.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepcounter.xml \
-    frameworks/native/data/etc/android.hardware.sensor.stepdetector.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepdetector.xml
+# PRODUCT_COPY_FILES += \
+#     frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
+#     frameworks/native/data/etc/android.hardware.sensor.barometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.barometer.xml \
+#     frameworks/native/data/etc/android.hardware.sensor.compass.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.compass.xml \
+#     frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.gyroscope.xml \
+#     frameworks/native/data/etc/android.hardware.sensor.light.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.light.xml \
+#     frameworks/native/data/etc/android.hardware.sensor.proximity.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.proximity.xml \
+#     frameworks/native/data/etc/android.hardware.sensor.stepcounter.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepcounter.xml \
+#     frameworks/native/data/etc/android.hardware.sensor.stepdetector.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.stepdetector.xml
 
-PRODUCT_VENDOR_PROPERTIES += \
-    persist.vendor.sensors.debug.ssc_qmi_debug=true \
-    persist.vendor.sensors.enable.bypass_worker=true \
-    persist.vendor.sensors.enable.rt_task=false \
-    persist.vendor.sensors.hal_trigger_ssr=false \
-    persist.vendor.sensors.support_direct_channel=false
+# PRODUCT_VENDOR_PROPERTIES += \
+#     persist.vendor.sensors.debug.ssc_qmi_debug=true \
+#     persist.vendor.sensors.enable.bypass_worker=true \
+#     persist.vendor.sensors.enable.rt_task=false \
+#     persist.vendor.sensors.hal_trigger_ssr=false \
+#     persist.vendor.sensors.support_direct_channel=false
 
 # Soong namespaces
 PRODUCT_SOONG_NAMESPACES += \
@@ -430,13 +432,14 @@ PRODUCT_COPY_FILES += \
 
 # WiFi
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/WCNSS_qcom_cfg.ini
+    $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/WCNSS_qcom_cfg.ini \
+    $(LOCAL_PATH)/configs/wifi/icm.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/icm.conf \
+    $(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf \
+    $(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
 
 # WLAN
 PRODUCT_VENDOR_PROPERTIES += \
     ro.hardware.wlan.chip=wcn3988 \
-    ro.hardware.wlan.dbs=0 \
-    ro.hardware.wlan.mimo=0 \
     ro.hardware.wlan.vendor=qcom
 
 PRODUCT_VENDOR_PROPERTIES += \
